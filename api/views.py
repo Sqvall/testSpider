@@ -7,34 +7,37 @@ from .serializers import *
 
 
 class OrganizationProductListView(generics.ListAPIView):
-    serializer_class = ProductsForAgencySerializer
+    serializer_class = ProductsForOrganizationSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter)
-    filter_class = filters.AgencyDetailFilter
+    filter_class = filters.OrganizationProductFilter
     search_fields = ('$product__name',)
 
     def get_queryset(self):
-        queryset = ProductForAgency.objects.filter(agency_id__exact=self.request.parser_context['kwargs']['pk']).order_by('-id')
+        queryset = models.Connector.objects.filter(organization_id__exact=self.request.parser_context['kwargs']['pk']).order_by('-id')
         return queryset
 
 
 class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Agency.objects.all().order_by('-id')
-    serializer_class = AgencyDetailSerializer
+    serializer_class = OrganizationDetailSerializer
+    queryset = models.Organization.objects.all().order_by('-id')
     filter_backends = (DjangoFilterBackend, SearchFilter)
-    filter_class = filters.AgencyFilter
+    filter_class = filters.OrganizationFilter
     search_fields = ('$name',)
 
 
-class ProductDetailView(generics.RetrieveAPIView):
+class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProductDetailSerializer
-    queryset = Product.objects.all().order_by('-id')
+    queryset = models.Product.objects.all().order_by('-id')
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    filter_class = filters.ProductFilter
+    search_fields = ('$name',)
 
 
 class OrganizationsFromDistrictListView(generics.ListAPIView):
-    serializer_class = AgencyByDistrictListSerializer
+    serializer_class = OrganizationByDistrictListSerializer
     filter_backends = (SearchFilter, )
     search_fields = ('$name',)
 
     def get_queryset(self):
-        queryset = Agency.objects.filter(district__exact=self.request.parser_context['kwargs']['pk']).order_by('-id')
+        queryset = models.Organization.objects.filter(district__exact=self.request.parser_context['kwargs']['pk']).order_by('-id')
         return queryset

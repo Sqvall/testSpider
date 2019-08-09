@@ -23,7 +23,7 @@ class Category(models.Model):
         return f'{self.name}'
 
 
-class NetworkOfEnterprises(models.Model):
+class Network(models.Model):
     name = models.CharField(max_length=50, verbose_name='Сеть предприятий', help_text='Не более 50 символов')
 
     class Meta:
@@ -34,13 +34,13 @@ class NetworkOfEnterprises(models.Model):
         return f'{self.name}'
 
 
-class Agency(models.Model):
+class Organization(models.Model):
     name = models.CharField(max_length=50, verbose_name='Предприятие', help_text='Не более 50 символов')
     description = models.TextField(blank=True, null=True, default='', verbose_name='Описание')
-    network = models.ForeignKey(NetworkOfEnterprises, blank=True, null=True,
+    network = models.ForeignKey(Network, blank=True, null=True,
                                 on_delete=models.SET_NULL,
                                 verbose_name='Сеть',
-                                related_name='agency')
+                                related_name='organization')
     district = models.ManyToManyField(District, verbose_name='Район',
                                       help_text='Выберете какие районы покрывает предприятие')
 
@@ -62,7 +62,7 @@ class Product(models.Model):
                                  on_delete=models.CASCADE,
                                  verbose_name='Категория товара',
                                  related_name='product')
-    network = models.ForeignKey(NetworkOfEnterprises, blank=True, null=True,
+    network = models.ForeignKey(Network, blank=True, null=True,
                                 on_delete=models.CASCADE,
                                 verbose_name='Реализуется в сети',
                                 related_name='product')
@@ -75,9 +75,10 @@ class Product(models.Model):
         return f'{self.name}'
 
 
-class ProductForAgency(models.Model):
-    agency = models.ForeignKey(Agency, on_delete=models.CASCADE, verbose_name='Предприятие', related_name='connector',
-                               help_text='Выберите сеть предприятия и сохраните, для получения списка предприятий')
+class Connector(models.Model):
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, verbose_name='Предприятие',
+                                     related_name='connector',
+                                     help_text='Выберите сеть предприятия и сохраните, для получения списка предприятий')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар', related_name='connector',
                                 help_text='Выберите сеть предприятия и сохраните, для получения списка товаров')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
@@ -87,4 +88,4 @@ class ProductForAgency(models.Model):
         verbose_name_plural = 'Товары в представительстве'
 
     def __str__(self):
-        return f'Организация: {self.agency}\nТовар: {self.product}\nЦена: {self.price}'
+        return f'Организация: {self.organization}\nТовар: {self.product}\nЦена: {self.price}'

@@ -4,8 +4,8 @@ from django.urls import resolve
 from .models import *
 
 
-class ProductForAgencyInline(admin.TabularInline):
-    model = ProductForAgency
+class ConnectorInline(admin.TabularInline):
+    model = Connector
     extra = 1
 
     def get_parent_object_from_request(self, request):
@@ -17,8 +17,8 @@ class ProductForAgencyInline(admin.TabularInline):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "product" and self.get_parent_object_from_request(request) is not None:
             kwargs["queryset"] = Product.objects.filter(network=self.get_parent_object_from_request(request).network)
-        elif db_field.name == "agency" and self.get_parent_object_from_request(request) is not None:
-            kwargs["queryset"] = Agency.objects.filter(network=self.get_parent_object_from_request(request).network)
+        elif db_field.name == "organization" and self.get_parent_object_from_request(request) is not None:
+            kwargs["queryset"] = Organization.objects.filter(network=self.get_parent_object_from_request(request).network)
         else:
             kwargs["queryset"] = Product.objects.all()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
@@ -32,21 +32,21 @@ class DistrictAdmin(admin.ModelAdmin):
         model = District
 
 
-@admin.register(NetworkOfEnterprises)
-class NetworkOfEnterprisesAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in NetworkOfEnterprises._meta.fields]
+@admin.register(Network)
+class NetworkAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Network._meta.fields]
 
     class Meta:
-        model = NetworkOfEnterprises
+        model = Network
 
 
-@admin.register(Agency)
-class AgencyAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Agency._meta.fields if field.name is not 'description']
-    inlines = [ProductForAgencyInline,]
+@admin.register(Organization)
+class OrganizationAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in Organization._meta.fields if field.name is not 'description']
+    inlines = [ConnectorInline, ]
 
     class Meta:
-        model = Agency
+        model = Organization
 
 
 @admin.register(Category)
@@ -60,7 +60,7 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = [field.name for field in Product._meta.fields]
-    inlines = [ProductForAgencyInline,]
+    inlines = [ConnectorInline, ]
 
     class Meta:
         model = Product

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from products.models import *
+from products import models
 
 
 class DistrictSerializer(serializers.ModelSerializer):
@@ -8,11 +8,13 @@ class DistrictSerializer(serializers.ModelSerializer):
     Сериализация районов
     """
     class Meta:
-        model = District
+        model = models.District
         fields = ('id', 'name',)
 
+# class ProdTest(serializers.HyperlinkedModelSerializer):
 
-class ProductsForAgencySerializer(serializers.ModelSerializer):
+
+class ProductsForOrganizationSerializer(serializers.ModelSerializer):
     """
     Сериализация продуктов для заведений(организаций)
     """
@@ -20,18 +22,18 @@ class ProductsForAgencySerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='product.category')
 
     class Meta:
-        model = ProductForAgency
+        model = models.Connector
         fields = ('category', 'name', 'price')
 
 
-class AgencyForProductsSerializer(serializers.ModelSerializer):
+class OrganizationForProductsSerializer(serializers.ModelSerializer):
     """
     Сериализация заведений для продуктов
     """
-    organization = serializers.CharField(source='agency')
+    organization = serializers.CharField(source='organization.name')
 
     class Meta:
-        model = ProductForAgency
+        model = models.Connector
         fields = ('organization', 'price')
 
 
@@ -41,33 +43,33 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     """
     network = serializers.CharField(source='network.name')
     category = serializers.CharField(source='category.name')
-    organizations = AgencyForProductsSerializer(many=True, read_only=True, source='connector')
+    organizations = OrganizationForProductsSerializer(many=True, read_only=True, source='connector')
 
     class Meta:
-        model = Product
-        fields = ('id', 'category', 'name', 'network', 'organizations')
+        model = models.Product
+        fields = ('url', 'id', 'category', 'name', 'network', 'organizations')
 
 
-class AgencyDetailSerializer(serializers.ModelSerializer):
+class OrganizationDetailSerializer(serializers.ModelSerializer):
     """
     Сериализация для детальной информации о заведении (организации)
     """
     network = serializers.CharField(source='network.name')
-    products = ProductsForAgencySerializer(many=True, read_only=True, source='connector')
+    products = ProductsForOrganizationSerializer(many=True, read_only=True, source='connector')
     district = DistrictSerializer(many=True)
 
     class Meta:
-        model = Agency
+        model = models.Organization
         fields = ('url', 'id', 'name', 'network', 'products', 'district')
 
 
-class AgencyByDistrictListSerializer(serializers.ModelSerializer):
+class OrganizationByDistrictListSerializer(serializers.ModelSerializer):
     """
     Сериализация заведений (организаций) для списка (не включает список районов)
     """
     network = serializers.CharField(source='network.name')
-    products = ProductsForAgencySerializer(many=True, read_only=True, source='connector')
+    products = ProductsForOrganizationSerializer(many=True, read_only=True, source='connector')
 
     class Meta:
-        model = Agency
+        model = models.Organization
         fields = ('url', 'id', 'name', 'network', 'products')
