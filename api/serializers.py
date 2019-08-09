@@ -4,20 +4,14 @@ from products import models
 
 
 class DistrictSerializer(serializers.ModelSerializer):
-    """
-    Сериализация районов
-    """
+    """ Сериализация районов """
     class Meta:
         model = models.District
         fields = ('id', 'name',)
 
-# class ProdTest(serializers.HyperlinkedModelSerializer):
-
 
 class ProductsForOrganizationSerializer(serializers.ModelSerializer):
-    """
-    Сериализация продуктов для заведений(организаций)
-    """
+    """ Сериализация продуктов для организаций """
     name = serializers.CharField(source='product.name')
     category = serializers.CharField(source='product.category')
 
@@ -27,9 +21,7 @@ class ProductsForOrganizationSerializer(serializers.ModelSerializer):
 
 
 class OrganizationForProductsSerializer(serializers.ModelSerializer):
-    """
-    Сериализация заведений для продуктов
-    """
+    """ Сериализация организаций для продуктов """
     organization = serializers.CharField(source='organization.name')
 
     class Meta:
@@ -38,9 +30,7 @@ class OrganizationForProductsSerializer(serializers.ModelSerializer):
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
-    """
-    Сериализация для детальной информации о продукте
-    """
+    """ Сериализация для детальной информации о продукте """
     network = serializers.CharField(source='network.name')
     category = serializers.CharField(source='category.name')
     organizations = OrganizationForProductsSerializer(many=True, read_only=True, source='connector')
@@ -51,9 +41,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
 
 class OrganizationDetailSerializer(serializers.ModelSerializer):
-    """
-    Сериализация для детальной информации о заведении (организации)
-    """
+    """ Сериализация для детальной информации об организаций """
     network = serializers.CharField(source='network.name')
     products = ProductsForOrganizationSerializer(many=True, read_only=True, source='connector')
     district = DistrictSerializer(many=True)
@@ -64,9 +52,7 @@ class OrganizationDetailSerializer(serializers.ModelSerializer):
 
 
 class OrganizationByDistrictListSerializer(serializers.ModelSerializer):
-    """
-    Сериализация заведений (организаций) для списка (не включает список районов)
-    """
+    """ Сериализация организаций для списка (не включает список районов) """
     network = serializers.CharField(source='network.name')
     products = ProductsForOrganizationSerializer(many=True, read_only=True, source='connector')
 
