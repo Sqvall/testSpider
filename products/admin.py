@@ -5,16 +5,23 @@ from .models import *
 
 
 class ConnectorInline(admin.TabularInline):
+    """ Вложение вспомогательного класса для связи """
     model = Connector
     extra = 1
 
     def get_parent_object_from_request(self, request):
+        """ Берём родителя родителя для инлайн формы """
         resolved = resolve(request.path_info)
         if resolved.kwargs:
             return self.parent_model.objects.get(pk=resolved.kwargs['object_id'])
         return None
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """
+        При первом сохранении родительской формы организации или товара/услуги
+        выводит список доступных сущностей для связи (товар<->организация).
+        До сохранения доступны все
+        """
         if db_field.name == "product" and self.get_parent_object_from_request(request) is not None:
             kwargs["queryset"] = Product.objects.filter(network=self.get_parent_object_from_request(request).network)
         elif db_field.name == "organization" and self.get_parent_object_from_request(request) is not None:
@@ -26,6 +33,7 @@ class ConnectorInline(admin.TabularInline):
 
 @admin.register(District)
 class DistrictAdmin(admin.ModelAdmin):
+    """ Районы """
     list_display = [field.name for field in District._meta.fields]
 
     class Meta:
@@ -34,6 +42,7 @@ class DistrictAdmin(admin.ModelAdmin):
 
 @admin.register(Network)
 class NetworkAdmin(admin.ModelAdmin):
+    """ Сети организаций """
     list_display = [field.name for field in Network._meta.fields]
 
     class Meta:
@@ -42,6 +51,7 @@ class NetworkAdmin(admin.ModelAdmin):
 
 @admin.register(Organization)
 class OrganizationAdmin(admin.ModelAdmin):
+    """ Отдельные организации """
     list_display = [field.name for field in Organization._meta.fields if field.name is not 'description']
     inlines = [ConnectorInline, ]
 
@@ -51,6 +61,7 @@ class OrganizationAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    """ Категории товаров/услуг """
     list_display = [field.name for field in Category._meta.fields]
 
     class Meta:
@@ -59,6 +70,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    """ Продукты/услуги """
     list_display = [field.name for field in Product._meta.fields]
     inlines = [ConnectorInline, ]
 

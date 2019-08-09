@@ -4,6 +4,7 @@ from products.models import Organization, Category, Connector, Network, Product
 
 
 class OrganizationFilter(FilterSet):
+    """ Фильтр категорий товаров и сети для общего списка организаций """
     category = filters.ModelMultipleChoiceFilter(queryset=Category.objects.all(),
                                                  field_name='connector__product__category__name',
                                                  to_field_name='name',
@@ -19,7 +20,7 @@ class OrganizationFilter(FilterSet):
 
 
 class ProductFilter(OrganizationFilter):
-
+    """ Фильтр категорий товаров, сети, мин. и макс. цены для общего списка товаров """
     min_price = filters.NumberFilter(field_name='price', lookup_expr='gte', label='Минимальная цена')
     max_price = filters.NumberFilter(field_name='price', lookup_expr='lte', label='Максимальная цена')
 
@@ -32,7 +33,10 @@ class ProductFilter(OrganizationFilter):
 
 
 class OrganizationProductFilter(FilterSet):
-
+    """
+    Фильтр категорий товаров, мин. и макс. цены для отдельной организации.
+    (почучает список категорий доступных в данной организации)
+    """
     def __init__(self, *args, **kwargs):
         super(OrganizationProductFilter, self).__init__(*args, **kwargs)
         x = kwargs['queryset'][0].organization.pk
