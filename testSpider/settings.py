@@ -60,7 +60,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'testSpider.wsgi.application'
 
 
-# Database
+# Database postgresql
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 # DATABASES = {
@@ -74,7 +74,7 @@ WSGI_APPLICATION = 'testSpider.wsgi.application'
 #     }
 # }
 
-
+# sqlite3
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

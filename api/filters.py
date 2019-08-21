@@ -19,8 +19,16 @@ class OrganizationFilter(FilterSet):
         fields = ['category', 'network']
 
 
-class ProductFilter(OrganizationFilter):
+class ProductFilter(FilterSet):
     """ Фильтр категорий товаров, сети, мин. и макс. цены для общего списка товаров """
+    category = filters.ModelMultipleChoiceFilter(queryset=Category.objects.all(),
+                                                 field_name='connector__product__category__name',
+                                                 to_field_name='name',
+                                                 label='Категория товаров/услуг')
+    network = filters.ModelMultipleChoiceFilter(queryset=Network.objects.all(),
+                                                field_name='network__name',
+                                                to_field_name='name',
+                                                label='Сеть организаций')
     min_price = filters.NumberFilter(field_name='price', lookup_expr='gte', label='Минимальная цена')
     max_price = filters.NumberFilter(field_name='price', lookup_expr='lte', label='Максимальная цена')
 
