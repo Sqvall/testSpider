@@ -46,10 +46,10 @@ class OrganizationProductFilter(FilterSet):
     (почучает список категорий доступных в данной организации)
     """
     def __init__(self, *args, **kwargs):
-        super(OrganizationProductFilter, self).__init__(*args, **kwargs)
-        x = kwargs['queryset'][0].organization.pk
+        super().__init__()
+        prod_id = kwargs['queryset'][0].organization.pk
         self.filters['category'] = filters.ModelMultipleChoiceFilter(
-            queryset=Category.objects.filter(product__connector__organization__id=x).distinct(),
+            queryset=Category.objects.filter(product__connector__organization__id=prod_id).distinct(),
             field_name='product__category__name',
             to_field_name='name', label='Категория товаров/услуг')
 

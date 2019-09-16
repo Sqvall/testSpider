@@ -7,12 +7,12 @@ from . import views
 class TestSpider(routers.APIRootView):
     """
     **All only GET method.**
-    \nСписок всех организаций: ```url:/organizations/```
-    \nСписок всех товаров/услуг: ```url:/product/```
-    \nСписок организаций в учётом предварительно выбранного района: ```url:/organizations/district_<district_id>/```
-    \nСписок товаров/услуг в отдельной организации: ```url:/organizations/<organization_id>/product_list/```
-    \nДетальная информация по организации: ```url:/organizations/<organization_id>/```
-    \nДетальная информация по товару/услуге: ```url:/product/<product_id>/```
+    \nСписок всех организаций: ```url:/api/organizations/```
+    \nСписок всех товаров/услуг: ```url:/api/product/```
+    \nСписок организаций в учётом предварительно выбранного района: ```url:/api/organizations/district_<district_id>/```
+    \nСписок товаров/услуг в отдельной организации: ```url:/api/organizations/<organization_id>/product_list/```
+    \nДетальная информация по организации: ```url:/api/organizations/<organization_id>/```
+    \nДетальная информация по товару/услуге: ```url:/api/product/<product_id>/```
     """
     pass
 

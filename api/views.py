@@ -8,7 +8,7 @@ from .serializers import *
 
 class OrganizationProductListView(generics.ListAPIView):
     """
-    Выводит список товаров в заведении: ```url:/organizations/<organization_id>/product_list/```\n
+    Выводит список товаров в заведении: ```url:/api/organizations/<organization_id>/product_list/```\n
     **Фильтры**: категория товаров/услуг, минимальная и максимальная цена.\n
     **Поиск**: по наименованию товара.
     """
@@ -25,10 +25,10 @@ class OrganizationProductListView(generics.ListAPIView):
 
 class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Выводит общий список заведений: ```url:/organizations/```\n
+    Выводит общий список заведений: ```url:/api/organizations/```\n
     **Фильтры**: по наличию категории товаров/услуг, по принадлежности к сети организаций.\n
     **Поиск**: по наименованию организации.\n
-    И детальную информацию по заведению: ```url:/organizations/<organization_id>/```
+    И детальную информацию по заведению: ```url:/api/organizations/<organization_id>/```
     """
     serializer_class = OrganizationDetailSerializer
     queryset = models.Organization.objects.all().order_by('-id')
@@ -39,10 +39,10 @@ class OrganizationViewSet(viewsets.ReadOnlyModelViewSet):
 
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Выводит общий список товаров: ```url:/product/```\n
+    Выводит общий список товаров: ```url:/api/product/```\n
     **Фильтры**: категория товаров/услуг, сеть организаций, минимальная и максимальная цена.\n
     **Поиск**: по наименованию товара.\n
-    И детальную информацию по товару: ```url:/product/<product_id>/```
+    И детальную информацию по товару: ```url:/api/product/<product_id>/```
     """
     serializer_class = ProductDetailSerializer
     queryset = models.Product.objects.all().order_by('-id')
@@ -53,7 +53,7 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
 
 class OrganizationsFromDistrictListView(generics.ListAPIView):
     """
-    Выводит список заведений с учетом выбора района: ```url:/organizations/district_<district_id>/```\n
+    Выводит список заведений с учетом выбора района: ```url:/api/organizations/district_<district_id>/```\n
     **Поиск**: по наименованию организации.\n
     """
     serializer_class = OrganizationByDistrictListSerializer
